@@ -77,6 +77,7 @@ class JacoComm
     void getJointAngles(JacoAngles &angles);
     void getJointVelocities(JacoAngles &vels);
     void getJointTorques(JacoAngles &tqs);
+    void getJointTorquesGravFree(AngularPosition &efforts);
     void getCartesianPosition(JacoPose &position);
     void getCartesianForce(JacoPose &position);
     void getFingerPositions(FingerAngles &fingers);

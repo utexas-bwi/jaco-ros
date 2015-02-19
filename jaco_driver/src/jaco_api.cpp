@@ -102,6 +102,9 @@ JacoAPI::JacoAPI(void)
     getPositionCurrentActuators = (int (*)(std::vector<float> &))checkApiInit(usbLib, "GetPositionCurrentActuators");
 
     setActuatorPID = (int (*)(unsigned int, float, float, float))checkApiInit(usbLib, "SetActuatorPID");
+    
+    //added by Jivko et al
+    getAngularForceGravityFree = (int (*)(AngularPosition &))checkApiInit(usbLib, "GetAngularForceGravityFree");
 }
 
 }  // namespace jaco

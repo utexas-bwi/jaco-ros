@@ -548,6 +548,24 @@ void JacoComm::getJointVelocities(JacoAngles &vels)
 }
 
 /*!
+ * \brief Obtains the current gravity-free joint efforts in Nm
+ * 
+ *  Obtains the current gravity-free joint efforts in Nm
+ */
+void JacoComm::getJointTorquesGravFree(AngularPosition &efforts){
+	boost::recursive_mutex::scoped_lock lock(api_mutex_);
+
+    memset(&efforts, 0, sizeof(efforts));  // zero structure
+
+	int result = jaco_api_.getAngularForceGravityFree(efforts);
+    if (result != NO_ERROR_KINOVA)
+    {
+        throw JacoCommException("Could not get the efforts", result);
+    }
+}
+
+
+/*!
  * \brief API call to obtain the current torque of all the joints.
  */
 void JacoComm::getJointTorques(JacoAngles &tqs)

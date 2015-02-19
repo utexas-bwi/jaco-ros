@@ -66,6 +66,8 @@ JacoArm::JacoArm(JacoComm &arm, const ros::NodeHandle &nodeHandle)
     tool_position_publisher_ = node_handle_.advertise<geometry_msgs::PoseStamped>("out/tool_position", 2);
     tool_wrench_publisher_ = node_handle_.advertise<geometry_msgs::WrenchStamped>("out/tool_wrench", 2);
     finger_position_publisher_ = node_handle_.advertise<jaco_msgs::FingerPosition>("out/finger_position", 2);
+	joint_effort_publisher_ = node_handle_.advertise<sensor_msgs::JointState>("out/joint_efforts", 2);
+
 
     /* Set up Subscribers*/
     joint_velocity_subscriber_ = node_handle_.subscribe("in/joint_velocity", 1,
@@ -73,7 +75,7 @@ JacoArm::JacoArm(JacoComm &arm, const ros::NodeHandle &nodeHandle)
     cartesian_velocity_subscriber_ = node_handle_.subscribe("in/cartesian_velocity", 1,
                                                           &JacoArm::cartesianVelocityCallback, this);
 
-    node_handle_.param<double>("status_interval_seconds", status_interval_seconds_, 0.1);
+    node_handle_.param<double>("status_interval_seconds", status_interval_seconds_, 0.05);
     node_handle_.param<double>("joint_angular_vel_timeout", joint_vel_timeout_seconds_, 0.25);
     node_handle_.param<double>("cartesian_vel_timeout", cartesian_vel_timeout_seconds_, 0.25);
     node_handle_.param<double>("joint_angular_vel_timeout", joint_vel_interval_seconds_, 0.1);
@@ -459,12 +461,46 @@ void JacoArm::publishFingerPosition(void)
 }
 
 
+
+/*!
+ * \brief Publishes the current joint efforts (gravity-free).
+ *
+ */
+void JacoArm::publishJointEfforts(void)
+{
+    // Qurry efforts
+    AngularPosition current_efforts_gfree;
+    jaco_comm_.getJointTorquesGravFree(current_efforts_gfree);
+	
+	/*ROS_INFO("Efforts:\t%f,%f,%f,%f,%f,%f",
+		current_efforts_gfree.Actuators.Actuator1,current_efforts_gfree.Actuators.Actuator2,current_efforts_gfree.Actuators.Actuator3,
+		current_efforts_gfree.Actuators.Actuator4,current_efforts_gfree.Actuators.Actuator5,current_efforts_gfree.Actuators.Actuator6);*/
+
+	//TO DO: publish these efforts
+	
+	sensor_msgs::JointState joint_state;
+    const char* nameArgs[] = {"jaco_joint_1", "jaco_joint_2", "jaco_joint_3", "jaco_joint_4", "jaco_joint_5", "jaco_joint_6"};
+    std::vector<std::string> joint_names(nameArgs, nameArgs + 6);
+    joint_state.name = joint_names;
+    
+    joint_state.effort.resize(6);
+    joint_state.effort[0] = current_efforts_gfree.Actuators.Actuator1;
+    joint_state.effort[1] = current_efforts_gfree.Actuators.Actuator2;
+    joint_state.effort[2] = current_efforts_gfree.Actuators.Actuator3;
+    joint_state.effort[3] = current_efforts_gfree.Actuators.Actuator4;
+    joint_state.effort[4] = current_efforts_gfree.Actuators.Actuator5;
+    joint_state.effort[5] = current_efforts_gfree.Actuators.Actuator6;
+    
+    joint_effort_publisher_.publish(joint_state);
+}
+
 void JacoArm::statusTimer(const ros::TimerEvent&)
 {
     publishJointAngles();
     publishToolPosition();
     publishToolWrench();
     publishFingerPosition();
+    publishJointEfforts();
 }
 
 }  // namespace jaco

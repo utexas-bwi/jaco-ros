@@ -71,6 +71,9 @@ class JacoAPI
     int (*eraseAllTrajectories)();
     int (*getPositionCurrentActuators)(std::vector<float> &);
     int (*setActuatorPID)(unsigned int, float, float, float);
+    
+    int (*getAngularForceGravityFree)(AngularPosition &);
+
 };
 
 }  // namespace jaco

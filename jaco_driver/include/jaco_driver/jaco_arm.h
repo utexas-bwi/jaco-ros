@@ -72,6 +72,8 @@ class JacoArm
     void publishToolPosition(void);
     void publishToolWrench(void);
     void publishFingerPosition(void);
+    void publishJointEfforts(void);
+
 
     tf::TransformListener tf_listener_;
     ros::NodeHandle node_handle_;
@@ -86,6 +88,8 @@ class JacoArm
     ros::Publisher tool_wrench_publisher_;
     ros::Publisher finger_position_publisher_;
     ros::Publisher joint_state_publisher_;
+	ros::Publisher joint_effort_publisher_;
+
 
     ros::ServiceServer stop_service_;
     ros::ServiceServer start_service_;
