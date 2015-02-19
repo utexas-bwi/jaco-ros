@@ -114,6 +114,13 @@ JacoArm::JacoArm(JacoComm &arm, const ros::NodeHandle &nodeHandle)
                                                   &JacoArm::cartesianVelocityTimer, this);
     cartesian_vel_timer_.stop();
     cartesian_vel_timer_flag_ = false;
+    
+    /* check if we should start the arm in force contstart_in_force_control_moderol */
+    bool start_in_force_control_mode = true;
+    node_handle_.param<bool>("", start_in_force_control_mode, true);
+    if (start_in_force_control_mode){
+		 jaco_comm_.startForceControl();
+	}
 
     ROS_INFO("The arm is ready to use.");
 

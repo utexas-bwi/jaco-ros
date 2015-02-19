@@ -22,6 +22,8 @@
     <param name="joint_angles/stall_threshold" value="1.0" />
     <param name="joint_angles/rate_hz" value="10.0" />
     <param name="joint_angles/tolerance" value="1.0" />
+    
+    <param name="start_in_force_control_mode" value="True" />
       
   </node>
     
