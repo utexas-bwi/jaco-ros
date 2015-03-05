@@ -6,6 +6,7 @@ find_package(catkin REQUIRED COMPONENTS
   actionlib
   actionlib_msgs
   geometry_msgs
+  std_msgs
 )
 
 #######################################
@@ -25,6 +26,7 @@ add_service_files(
   Stop.srv
   HomeArm.srv
   SetForceControlParams.srv
+  GetFingerTemperature.srv
 )
 
 add_action_files(DIRECTORY action
@@ -38,6 +40,7 @@ generate_messages(
   DEPENDENCIES
   actionlib_msgs
   geometry_msgs
+  std_msgs
 )
 
 catkin_package(

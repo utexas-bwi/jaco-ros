@@ -13,6 +13,7 @@
 #define PI 3.14159265359
 
 
+
 namespace 
 {
     /// \brief Convert Kinova-specific angle degree variations (0..180, 360-181) to
@@ -59,6 +60,7 @@ JacoArm::JacoArm(JacoComm &arm, const ros::NodeHandle &nodeHandle)
     set_force_control_params_service_ = node_handle_.advertiseService("in/set_force_control_params", &JacoArm::setForceControlParamsCallback, this);
     start_force_control_service_ = node_handle_.advertiseService("in/start_force_control", &JacoArm::startForceControlCallback, this);
     stop_force_control_service_ = node_handle_.advertiseService("in/stop_force_control", &JacoArm::stopForceControlCallback, this);
+    get_finger_temperature_service_ = node_handle_.advertiseService("in/get_finger_temperature", &JacoArm::getFingerTemperatureCallback, this);
     
     /* Set up Publishers */
     joint_angles_publisher_ = node_handle_.advertise<jaco_msgs::JointAngles>("out/joint_angles", 2);
@@ -126,7 +128,8 @@ JacoArm::JacoArm(JacoComm &arm, const ros::NodeHandle &nodeHandle)
 
     ROS_INFO("The arm is ready to use.");
 
-
+	/* get gripper status */
+	
 }
 
 
@@ -228,6 +231,20 @@ bool JacoArm::setForceControlParamsCallback(jaco_msgs::SetForceControlParams::Re
 
     return true;
 }
+
+bool JacoArm::getFingerTemperatureCallback(jaco_msgs::GetFingerTemperature::Request &req, jaco_msgs::GetFingerTemperature::Response &res){
+	
+	Gripper g;
+	jaco_comm_.getGripperStatus(g);
+	
+	ROS_INFO("Gripper temps: %f, %f",g.Fingers[0].ActualTemperature,g.Fingers[1].ActualTemperature  );
+	
+	res.f1_temp = g.Fingers[0].ActualTemperature;															
+	res.f2_temp = g.Fingers[1].ActualTemperature;															
+	res.f3_temp = g.Fingers[2].ActualTemperature;															
+	return true;										
+}
+
 
 bool JacoArm::startForceControlCallback(jaco_msgs::Start::Request &req, jaco_msgs::Start::Response &res)
 {
@@ -501,6 +518,11 @@ void JacoArm::statusTimer(const ros::TimerEvent&)
     publishToolWrench();
     publishFingerPosition();
     publishJointEfforts();
+    
+    /*Gripper g;
+	jaco_comm_.getGripperStatus(g);
+	
+	ROS_INFO("Gripper temps: %f, %f",g.Fingers[0].ActualTemperature,g.Fingers[1].ActualTemperature  );*/
 }
 
 }  // namespace jaco

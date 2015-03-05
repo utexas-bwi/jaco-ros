@@ -73,6 +73,8 @@ class JacoAPI
     int (*setActuatorPID)(unsigned int, float, float, float);
     
     int (*getAngularForceGravityFree)(AngularPosition &);
+    int (*getGripperStatus)(Gripper &);
+    
 
 };
 

@@ -26,6 +26,7 @@
 #include <jaco_msgs/FingerPosition.h>
 #include <jaco_msgs/JointAngles.h>
 #include <jaco_msgs/SetForceControlParams.h>
+#include <jaco_msgs/GetFingerTemperature.h>
 
 #include <time.h>
 #include <math.h>
@@ -61,6 +62,9 @@ class JacoArm
                                    jaco_msgs::Start::Response &res);
     bool stopForceControlCallback(jaco_msgs::Stop::Request &req,
                                   jaco_msgs::Stop::Response &res);
+                                  
+    bool getFingerTemperatureCallback(jaco_msgs::GetFingerTemperature::Request &req,
+										jaco_msgs::GetFingerTemperature::Response &res);
 
  private:
     void positionTimer(const ros::TimerEvent&);
@@ -98,6 +102,8 @@ class JacoArm
     ros::ServiceServer set_force_control_params_service_;
     ros::ServiceServer start_force_control_service_;
     ros::ServiceServer stop_force_control_service_;
+	ros::ServiceServer get_finger_temperature_service_;
+
 
     // Timers for control loops
     ros::Timer status_timer_;

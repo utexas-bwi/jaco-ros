@@ -105,6 +105,9 @@ JacoAPI::JacoAPI(void)
     
     //added by Jivko et al
     getAngularForceGravityFree = (int (*)(AngularPosition &))checkApiInit(usbLib, "GetAngularForceGravityFree");
+    
+    getGripperStatus =  (int (*)(Gripper &)) checkApiInit(usbLib, "GetGripperStatus");
+    
 }
 
 }  // namespace jaco

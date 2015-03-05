@@ -618,6 +618,25 @@ void JacoComm::getCartesianForce(JacoPose &cart_force)
     cart_force = JacoPose(jaco_cartesian_force.Coordinates);
 }
 
+void JacoComm::getGripperStatus(Gripper &gr){
+	boost::recursive_mutex::scoped_lock lock(api_mutex_);
+	
+	Gripper gripper;
+	memset(&gripper, 0, sizeof(gripper));  // zero structure
+
+	
+	int result = jaco_api_.getGripperStatus(gripper);
+	
+	if (result != NO_ERROR_KINOVA)
+    {
+        throw JacoCommException("Could not get Cartesian finger position", result);
+    }
+    
+    gr = gripper;
+    
+   
+}
+
 /*!
  * \brief API call to obtain the current finger positions.
  */
@@ -666,6 +685,8 @@ void JacoComm::setCartesianForceMinMax(const CartesianInfo &min, const Cartesian
         throw JacoCommException("Could not set cartesian min/max force.", result);
     }
 }
+
+
 
 /*!
  * \brief Start cartesian force control.
