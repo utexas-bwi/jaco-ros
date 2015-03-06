@@ -78,6 +78,10 @@ add_dependencies(jaco_tf_updater ${catkin_EXPORTED_TARGETS})
 target_link_libraries(jaco_arm_driver ${catkin_LIBRARIES} dl)
 target_link_libraries(jaco_tf_updater ${catkin_LIBRARIES})
 
+add_executable(joint_state_processor src/nodes/joint_state_processor.cpp)
+target_link_libraries(joint_state_processor ${catkin_LIBRARIES} ${PCL_LIBRARIES})
+
+
 #############
 ## Install ##
 #############

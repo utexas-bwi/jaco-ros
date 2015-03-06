@@ -357,7 +357,9 @@ void JacoArm::publishJointAngles(void)
     // Transform from Kinova DH algorithm to physical angles in radians, then place into vector array
     joint_state.position.resize(9);
 
-    double j6o = jaco_comm_.robotType() == 2 ? 270.0 : 260.0;
+	
+    double j6o = jaco_comm_.robotType() == 2 ? 260.0 : 270.0;
+   
     joint_state.position[0] = (180- jaco_angles.joint1) * (PI / 180);
     joint_state.position[1] = (jaco_angles.joint2 - j6o) * (PI / 180);
     joint_state.position[2] = (90-jaco_angles.joint3) * (PI / 180);

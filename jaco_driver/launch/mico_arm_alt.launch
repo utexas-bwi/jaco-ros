@@ -1,0 +1,48 @@
+<launch>
+
+  <arg name="use_urdf" default="true"/>
+  <arg name="use_rviz" default="true"/>
+
+  <node name="mico_arm_driver" pkg="jaco_driver" type="jaco_arm_driver" output="screen" cwd="node">
+    <!-- Set this parameter to use a specific arm on your system    --> 
+    <!-- <param name="serial_number" value="PJ00650002132770005" /> -->
+    <param name="tf_prefix" value="mico_" />
+
+    <param name="fingers/stall_interval_seconds" value="1.0" />
+    <param name="fingers/stall_threshold" value="1.0" />
+    <param name="fingers/rate_hz" value="10.0" />
+    <param name="fingers/tolerance" value="15.0" />
+
+    <param name="arm_pose/stall_interval_seconds" value="1.0" />
+    <param name="arm_pose/stall_threshold" value="0.005" />
+    <param name="arm_pose/rate_hz" value="10.0" />
+    <param name="arm_pose/tolerance" value="0.005" />
+    <param name="arm_pose/tf_prefix" value="mico_" />
+
+    <param name="joint_angles/stall_interval_seconds" value="1.0" />
+    <param name="joint_angles/stall_threshold" value="1.0" />
+    <param name="joint_angles/rate_hz" value="10.0" />
+    <param name="joint_angles/tolerance" value="1.0" />
+    
+    <param name="start_in_force_control_mode" value="True" />
+      
+  </node>
+  
+  <node name="joint_state_processor" pkg="jaco_driver" type="joint_state_processor" output="screen" cwd="node"></node>
+    
+  <param name="robot_description" textfile="$(find
+		jaco_model)/urdf/mico_arm_standalone_alt.urdf" />
+		
+	<!-- launch the tf tree -->
+  <node pkg="robot_state_publisher" type="robot_state_publisher"
+name="robot_state_publisher">
+    <param name="publish_frequency" type="double" value="5.0" />
+  </node>
+
+
+	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find
+jaco_model)/rviz/rviz_mico_alt.rviz" required="true" />
+
+  
+  
+</launch>
