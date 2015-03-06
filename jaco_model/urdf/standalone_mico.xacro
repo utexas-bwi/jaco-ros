@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
 
+ <!-- generic constants -->
+
+
 
 <robot xmlns:xi="http://www.w3.org/2001/XInclude"
 	xmlns:gazebo="http://playerstage.sourceforge.net/gazebo/xmlschema/#gz"
@@ -15,9 +18,14 @@
     xmlns:physics="http://playerstage.sourceforge.net/gazebo/xmlschema/#physics"
 	xmlns:xacro="http://ros.org/wiki/xacro" name="mico">
 
-  <xacro:include filename="$(find jaco_model)/urdf/mico_arm.xacro" />
+	<xacro:property name="M_PI" value="3.14159265359" />
+<xacro:property name="INCH_TO_M" value="0.0254"/>
 
-<link name="root">
+	<xacro:include filename="$(find jaco_model)/urdf/mico_arm.xacro" />
+	<xacro:include filename="$(find segbot_description)/urdf/sensors/kinect_camera.urdf.xacro" />
+
+
+<link name="root_link">
       <visual>
 	<origin xyz="0 0 0" rpy="0 0 0" />
 	<geometry>
@@ -33,6 +41,11 @@
       </collision>     
     </link>
 
-<xacro:mico_arm  parent="root"/>
+<xacro:mico_arm  parent="root_link"/>
+
+<xacro:kinect_camera name="camera" parent="root">
+      <origin xyz="0.05 +0.255 0.75" rpy="0 0.74 ${-M_PI/2}" />
+    </xacro:kinect_camera>
+     
 
 </robot>
