@@ -22,7 +22,8 @@
 <xacro:property name="INCH_TO_M" value="0.0254"/>
 
 	<xacro:include filename="$(find jaco_model)/urdf/mico_arm.xacro" />
-	
+	<xacro:include filename="$(find segbot_description)/urdf/sensors/kinect_camera.urdf.xacro" />
+
 
 <link name="root_link">
       <visual>
@@ -42,7 +43,9 @@
 
 <xacro:mico_arm  parent="root_link"/>
 
-
+<xacro:kinect_camera name="camera" parent="root">
+      <origin xyz="0.05 +0.245 0.75" rpy="0 0.74 ${-M_PI/2}" />
+    </xacro:kinect_camera>
      
 
 </robot>

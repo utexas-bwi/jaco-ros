@@ -359,8 +359,14 @@ void JacoComm::setCartesianPosition(const JacoPose &position, int timeout, bool 
     jaco_position.Position.Actuators.Actuator6 = 0.0f;
 
     jaco_position.Position.CartesianPosition = position;
-
-    result = jaco_api_.sendBasicTrajectory(jaco_position);
+    
+    /*ROS_INFO("active: %o",jaco_position.LimitationsActive);
+    jaco_position.LimitationsActive = 1;
+    jaco_position.Limitations.speedParameter1 = 5.5;
+    jaco_position.Limitations.speedParameter2 = 5.5;
+	jaco_position.Limitations.speedParameter3 = 5.5;*/
+	 
+	result = jaco_api_.sendBasicTrajectory(jaco_position);
     if (result != NO_ERROR_KINOVA)
     {
         throw JacoCommException("Could not send basic trajectory", result);
