@@ -25,7 +25,8 @@
     <param name="joint_angles/tolerance" value="1.0" />
     
     <param name="start_in_force_control_mode" value="True" />
-      
+    <!-- support effort types: "gravfree" (default), "full" -->
+    <param name="joint_efforts_type" value="gravfree" />
   </node>
     
   <group unless="$(arg use_urdf)">
