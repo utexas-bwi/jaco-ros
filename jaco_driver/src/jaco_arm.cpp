@@ -68,6 +68,7 @@ JacoArm::JacoArm(JacoComm &arm, const ros::NodeHandle &nodeHandle)
     tool_position_publisher_ = node_handle_.advertise<geometry_msgs::PoseStamped>("out/tool_position", 2);
     tool_wrench_publisher_ = node_handle_.advertise<geometry_msgs::WrenchStamped>("out/tool_wrench", 2);
     finger_position_publisher_ = node_handle_.advertise<jaco_msgs::FingerPosition>("out/finger_position", 2);
+    
 	joint_effort_publisher_ = node_handle_.advertise<sensor_msgs::JointState>("out/joint_efforts", 2);
 
 
@@ -82,6 +83,7 @@ JacoArm::JacoArm(JacoComm &arm, const ros::NodeHandle &nodeHandle)
     node_handle_.param<double>("cartesian_vel_timeout", cartesian_vel_timeout_seconds_, 0.25);
     node_handle_.param<double>("joint_angular_vel_timeout", joint_vel_interval_seconds_, 0.1);
     node_handle_.param<double>("cartesian_vel_timeout", cartesian_vel_interval_seconds_, 0.01);
+    node_handle_.param<std::string>("joint_efforts_type", joint_efforts_type_, "gravfree");
 
     node_handle_.param<std::string>("tf_prefix", tf_prefix_, "jaco_");
 
@@ -483,32 +485,44 @@ void JacoArm::publishFingerPosition(void)
 
 /*!
  * \brief Publishes the current joint efforts (gravity-free).
- *
  */
 void JacoArm::publishJointEfforts(void)
-{
-    // Qurry efforts
-    AngularPosition current_efforts_gfree;
-    jaco_comm_.getJointTorquesGravFree(current_efforts_gfree);
-	
+{	
+	sensor_msgs::JointState joint_state;
+    const char* nameArgs[] = {"jaco_joint_1", "jaco_joint_2", "jaco_joint_3", "jaco_joint_4", "jaco_joint_5", "jaco_joint_6"};
+    std::vector<std::string> joint_names(nameArgs, nameArgs + 6);
+    joint_state.name = joint_names;
+    //hacky copy/paste due to different message types
+    if(!joint_efforts_type_.compare("full")){
+	    AngularPosition current_efforts;
+		jaco_comm_.getJointTorques(current_efforts);
+		joint_state.effort.resize(6);
+		joint_state.effort[0] = current_efforts.Actuators.Actuator1;
+		joint_state.effort[1] = current_efforts.Actuators.Actuator2;
+		joint_state.effort[2] = current_efforts.Actuators.Actuator3;
+		joint_state.effort[3] = current_efforts.Actuators.Actuator4;
+		joint_state.effort[4] = current_efforts.Actuators.Actuator5;
+		joint_state.effort[5] = current_efforts.Actuators.Actuator6;
+	}else if(!joint_efforts_type_.compare("gravfree")) {
+	    AngularPosition current_efforts;
+		jaco_comm_.getJointTorquesGravFree(current_efforts);
+		joint_state.effort.resize(6);
+		joint_state.effort[0] = current_efforts.Actuators.Actuator1;
+		joint_state.effort[1] = current_efforts.Actuators.Actuator2;
+		joint_state.effort[2] = current_efforts.Actuators.Actuator3;
+		joint_state.effort[3] = current_efforts.Actuators.Actuator4;
+		joint_state.effort[4] = current_efforts.Actuators.Actuator5;
+		joint_state.effort[5] = current_efforts.Actuators.Actuator6;
+	}
 	/*ROS_INFO("Efforts:\t%f,%f,%f,%f,%f,%f",
 		current_efforts_gfree.Actuators.Actuator1,current_efforts_gfree.Actuators.Actuator2,current_efforts_gfree.Actuators.Actuator3,
 		current_efforts_gfree.Actuators.Actuator4,current_efforts_gfree.Actuators.Actuator5,current_efforts_gfree.Actuators.Actuator6);*/
 
 	//TO DO: publish these efforts
 	
-	sensor_msgs::JointState joint_state;
-    const char* nameArgs[] = {"jaco_joint_1", "jaco_joint_2", "jaco_joint_3", "jaco_joint_4", "jaco_joint_5", "jaco_joint_6"};
-    std::vector<std::string> joint_names(nameArgs, nameArgs + 6);
-    joint_state.name = joint_names;
+	
     
-    joint_state.effort.resize(6);
-    joint_state.effort[0] = current_efforts_gfree.Actuators.Actuator1;
-    joint_state.effort[1] = current_efforts_gfree.Actuators.Actuator2;
-    joint_state.effort[2] = current_efforts_gfree.Actuators.Actuator3;
-    joint_state.effort[3] = current_efforts_gfree.Actuators.Actuator4;
-    joint_state.effort[4] = current_efforts_gfree.Actuators.Actuator5;
-    joint_state.effort[5] = current_efforts_gfree.Actuators.Actuator6;
+
     
     joint_effort_publisher_.publish(joint_state);
 }
