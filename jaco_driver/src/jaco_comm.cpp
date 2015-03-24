@@ -569,7 +569,19 @@ void JacoComm::getJointTorquesGravFree(AngularPosition &efforts){
         throw JacoCommException("Could not get the efforts", result);
     }
 }
+//Max's overloaded getJointTorques
+//because Kinovas version is stuffing it into jacoAngles for some reason
+void JacoComm::getJointTorques(AngularPosition &tqs)
+{
+    boost::recursive_mutex::scoped_lock lock(api_mutex_);
+    memset(&tqs, 0, sizeof(tqs));  // zero structure
 
+    int result = jaco_api_.getAngularForce(tqs);
+    if (result != NO_ERROR_KINOVA)
+    {
+        throw JacoCommException("Could not get the joint torques", result);
+    }
+}
 
 /*!
  * \brief API call to obtain the current torque of all the joints.

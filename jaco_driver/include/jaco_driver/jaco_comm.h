@@ -77,6 +77,7 @@ class JacoComm
     void setConfig(const ClientConfigurations &config);
     void getJointAngles(JacoAngles &angles);
     void getJointVelocities(JacoAngles &vels);
+    void getJointTorques(AngularPosition &tqs);
     void getJointTorques(JacoAngles &tqs);
     void getJointTorquesGravFree(AngularPosition &efforts);
     void getCartesianPosition(JacoPose &position);
