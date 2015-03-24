@@ -92,7 +92,7 @@ class JacoArm
     ros::Publisher tool_wrench_publisher_;
     ros::Publisher finger_position_publisher_;
     ros::Publisher joint_state_publisher_;
-	ros::Publisher joint_effort_publisher_;
+    ros::Publisher joint_effort_publisher_;
 
 
     ros::ServiceServer stop_service_;
@@ -119,6 +119,7 @@ class JacoArm
     std::string tf_prefix_;
     double finger_conv_ratio_;
     bool convert_joint_velocities_;
+    std::string joint_efforts_type_;
 
     // State tracking or utility members
     bool cartesian_vel_timer_flag_;
