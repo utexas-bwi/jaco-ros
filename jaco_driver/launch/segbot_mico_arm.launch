@@ -54,7 +54,7 @@
   
   
   <group if="$(arg use_urdf)">
-    <include file="$(find jaco_model)/launch/upload_mico.launch"/>
+    <include file="$(find jaco_model)/launch/upload_segbot_mico.launch"/>
     <node name="mico_state_publisher"
            pkg="robot_state_publisher"
           type="robot_state_publisher">
@@ -63,7 +63,7 @@
   </group>
   
   <group if="$(arg use_rviz)">
-	<param name="robot_description" command="$(find xacro)/xacro.py '$(find jaco_model)/urdf/standalone_mico_and_xtion.xacro'" />
+	<param name="robot_description" command="$(find xacro)/xacro.py '$(find segbot_description)/robots/segbot_v2.arm.urdf.xacro'  use_full_gazebo_model:=true" />
 	<node name="rviz" pkg="rviz" type="rviz"
               args="-d $(find jaco_model)/rviz/rviz_mico.rviz" />
   </group>
