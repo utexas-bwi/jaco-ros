@@ -453,15 +453,54 @@ void JacoComm::setJointVelocities(const AngularInfo &joint_vel)
 
     memset(&jaco_velocity, 0, sizeof(jaco_velocity));  // zero structure
 
-    //startAPI();
+
     jaco_velocity.Position.Type = ANGULAR_VELOCITY;
 
     // confusingly, velocity is passed in the position struct
     jaco_velocity.Position.Actuators = joint_vel;
+    
+    //We set a velocity of 48 degrees per second.
+	/*jaco_velocity.Position.Actuators.Actuator1 = 0;
+	jaco_velocity.Position.Actuators.Actuator2 = 0;
+	jaco_velocity.Position.Actuators.Actuator3 = 0;
+	jaco_velocity.Position.Actuators.Actuator4 = 0;
+	jaco_velocity.Position.Actuators.Actuator5 = 0;
+	jaco_velocity.Position.Actuators.Actuator6 = 48;*/
+    
+    
+    
+    
+    
+    
+    
+    ROS_INFO("[jaco_comm.cpp] Setting velocities to %f, %f, %f, %f, %f, %f", jaco_velocity.Position.Actuators.Actuator1, jaco_velocity.Position.Actuators.Actuator2,
+		jaco_velocity.Position.Actuators.Actuator3,jaco_velocity.Position.Actuators.Actuator4,jaco_velocity.Position.Actuators.Actuator5,jaco_velocity.Position.Actuators.Actuator6);
 
-    int result = jaco_api_.sendAdvanceTrajectory(jaco_velocity);
-    if (result != NO_ERROR_KINOVA)
+
+
+	jaco_velocity.Position.Fingers.Finger1 = -4500.0f;
+	jaco_velocity.Position.Fingers.Finger2 = -4500.0f;
+	int result;
+	/*for(int i = 0; i < 10; i++)
+	{
+		//Add the point to the robot's FIFO
+		//(*MySendBasicTrajectory)(pointToSend);
+
+		result = jaco_api_.sendBasicTrajectory(jaco_velocity);
+		//ROS_INFO("Trajectory result: %i", result);
+		
+		//get current position
+		
+		//int j_result = jaco_api_.getAngularPosition(jaco_angles);
+
+		//usleep(3000);
+		sleep(0.025);
+	}*/
+    result = jaco_api_.sendAdvanceTrajectory(jaco_velocity);
+    
+	if (result != NO_ERROR_KINOVA)
     {
+		ROS_INFO("There is an error.");
         throw JacoCommException("Could not send advanced joint velocity trajectory", result);
     }
 }
