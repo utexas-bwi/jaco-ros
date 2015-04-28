@@ -9,7 +9,6 @@
 #include "jaco_driver/jaco_arm.h"
 #include <string>
 #include <vector>
-#include <ros/ros.h>
 
 #define PI 3.14159265359
 
@@ -82,7 +81,7 @@ JacoArm::JacoArm(JacoComm &arm, const ros::NodeHandle &nodeHandle)
     node_handle_.param<double>("status_interval_seconds", status_interval_seconds_, 0.025);
     node_handle_.param<double>("joint_angular_vel_timeout", joint_vel_timeout_seconds_, 0.25);
     node_handle_.param<double>("cartesian_vel_timeout", cartesian_vel_timeout_seconds_, 0.25);
-    node_handle_.param<double>("joint_angular_vel_timeout", joint_vel_interval_seconds_, 0.01);
+    node_handle_.param<double>("joint_angular_vel_timeout", joint_vel_interval_seconds_, 0.1);
     node_handle_.param<double>("cartesian_vel_timeout", cartesian_vel_interval_seconds_, 0.01);
     node_handle_.param<std::string>("joint_efforts_type", joint_efforts_type_, "gravfree");
 
@@ -154,10 +153,6 @@ void JacoArm::jointVelocityCallback(const jaco_msgs::JointVelocityConstPtr& join
 {
     if (!jaco_comm_.isStopped())
     {
-		//std::cout << "Message recieved!" << std::endl;
-		//ROS_INFO("Messages from 1 to 6: %f %f %f %f %f %f", joint_vel->joint1, joint_vel->joint2, joint_vel->joint3,
-		//	joint_vel->joint4, joint_vel->joint5, joint_vel->joint6);
-       
         joint_velocities_.Actuator1 = joint_vel->joint1;
         joint_velocities_.Actuator2 = joint_vel->joint2;
         joint_velocities_.Actuator3 = joint_vel->joint3;
@@ -312,6 +307,7 @@ void JacoArm::cartesianVelocityTimer(const ros::TimerEvent&)
 void JacoArm::jointVelocityTimer(const ros::TimerEvent&)
 {
     double elapsed_time_seconds = ros::Time().now().toSec() - last_joint_vel_cmd_time_.toSec();
+
     if (elapsed_time_seconds > joint_vel_timeout_seconds_)
     {
         ROS_DEBUG("Joint vel timed out: %f", elapsed_time_seconds);
@@ -320,12 +316,11 @@ void JacoArm::jointVelocityTimer(const ros::TimerEvent&)
     }
     else
     {
-        ROS_INFO("Joint vel timer (%f): %f, %f, %f, %f, %f, %f", elapsed_time_seconds,
+        ROS_DEBUG("Joint vel timer (%f): %f, %f, %f, %f, %f, %f", elapsed_time_seconds,
                   joint_velocities_.Actuator1, joint_velocities_.Actuator2, joint_velocities_.Actuator3,
                   joint_velocities_.Actuator4, joint_velocities_.Actuator5, joint_velocities_.Actuator6);
         jaco_comm_.setJointVelocities(joint_velocities_);
     }
-    	ROS_INFO("joint_vel_timer_flag_: %i", joint_vel_timer_flag_);
 }
 
 
