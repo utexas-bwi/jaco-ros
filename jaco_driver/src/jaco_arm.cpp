@@ -423,6 +423,13 @@ void JacoArm::publishJointAngles(void)
                        joint_state.effort[3],
                        joint_state.effort[4],
                        joint_state.effort[5]);
+                 
+    /* here, we get ride of the 0 values for finger 3 since the robot doesn't actually have finger 3 and 
+     * other ROS packages complain when the joint_states message contains joints that are not in the URDF model */                   
+	joint_state.name.pop_back();
+	joint_state.position.pop_back();
+	joint_state.velocity.pop_back();
+	joint_state.effort.pop_back();
 
     joint_angles_publisher_.publish(jaco_angles);
     joint_state_publisher_.publish(joint_state);
