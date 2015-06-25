@@ -31,6 +31,7 @@
     <!-- how often the driver publishes the robot's joint states, efforts, etc. -->
     <param name="status_interval_seconds" value="0.025" />
 
+	<remap from="/mico_arm_driver/out/joint_state" to="/joint_states"/>
 
   </node>
     
@@ -58,8 +59,8 @@
     <node name="mico_state_publisher"
            pkg="robot_state_publisher"
           type="robot_state_publisher">
-      <remap from="joint_states" to="/mico_arm_driver/out/joint_state"/>
-    </node>
+		<remap from="joint_states" to="/mico_arm_driver/out/joint_state"/>
+    </node> 
   </group>
   
   <group if="$(arg use_rviz)">
