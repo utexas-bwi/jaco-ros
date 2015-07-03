@@ -81,7 +81,7 @@ JacoArm::JacoArm(JacoComm &arm, const ros::NodeHandle &nodeHandle)
     node_handle_.param<double>("status_interval_seconds", status_interval_seconds_, 0.025);
     node_handle_.param<double>("joint_angular_vel_timeout", joint_vel_timeout_seconds_, 0.25);
     node_handle_.param<double>("cartesian_vel_timeout", cartesian_vel_timeout_seconds_, 0.25);
-    node_handle_.param<double>("joint_angular_vel_timeout", joint_vel_interval_seconds_, 0.1);
+    node_handle_.param<double>("joint_angular_vel_timeout", joint_vel_interval_seconds_, 0.01);
     node_handle_.param<double>("cartesian_vel_timeout", cartesian_vel_interval_seconds_, 0.01);
     node_handle_.param<std::string>("joint_efforts_type", joint_efforts_type_, "gravfree");
 
@@ -310,13 +310,13 @@ void JacoArm::jointVelocityTimer(const ros::TimerEvent&)
 
     if (elapsed_time_seconds > joint_vel_timeout_seconds_)
     {
-        ROS_DEBUG("Joint vel timed out: %f", elapsed_time_seconds);
+        ROS_INFO("Joint vel timed out: %f", elapsed_time_seconds);
         joint_vel_timer_.stop();
         joint_vel_timer_flag_ = false;
     }
     else
     {
-        ROS_DEBUG("Joint vel timer (%f): %f, %f, %f, %f, %f, %f", elapsed_time_seconds,
+        ROS_INFO("Joint vel timer (%f): %f, %f, %f, %f, %f, %f", elapsed_time_seconds,
                   joint_velocities_.Actuator1, joint_velocities_.Actuator2, joint_velocities_.Actuator3,
                   joint_velocities_.Actuator4, joint_velocities_.Actuator5, joint_velocities_.Actuator6);
         jaco_comm_.setJointVelocities(joint_velocities_);
