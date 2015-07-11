@@ -47,7 +47,7 @@
   <property name="joint_2_axis_xyz" value="0 0 1" />
   <property name="joint_2_origin_xyz" value="0 0 -0.1185" />
   <property name="joint_2_origin_rpy" value="-${J_PI/2} ${J_PI} 0" />
-  <property name="joint_2_lower_limit" value="${-J_PI}" />
+  <property name="joint_2_lower_limit" value="${-J_PI - .45}" />
   <property name="joint_2_upper_limit" value="${0}" />
 
   <property name="joint_3" value="mico_joint_3" />
