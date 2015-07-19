@@ -300,6 +300,16 @@ void JacoComm::setJointAngles(const JacoAngles &angles, int timeout, bool push)
     jaco_position.Position.Delay = 0.0;
     jaco_position.Position.Type = ANGULAR_POSITION;
     jaco_position.Position.Actuators = angles;
+    
+    //set the speed
+    ROS_INFO("Setting speed of arm...");
+    jaco_position.LimitationsActive = 1;
+
+	//Set velocity limitation to 20 degrees per second for joint 1, 2 and 3.
+	jaco_position.Limitations.speedParameter1 = 20.0f;
+
+	//Set velocity limitation to 20 degrees per second for joint 4, 5 and 6
+	jaco_position.Limitations.speedParameter2 = 20.0f;
 
     result = jaco_api_.sendAdvanceTrajectory(jaco_position);
     if (result != NO_ERROR_KINOVA)
