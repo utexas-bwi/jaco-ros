@@ -54,6 +54,10 @@
 #include "jaco_driver/jaco_api.h"
 
 
+#define MIN_ANGULAR_SPEED_PARAM 5.0f
+#define MAX_ANGULAR_SPEED_PARAM 30.0f
+#define DEFAULT_ANGULAR_SPEED_PARAM 20.0f
+
 namespace jaco
 {
 
@@ -76,6 +80,7 @@ class JacoComm
     void setCartesianVelocities(const CartesianInfo &velocities);
     void setConfig(const ClientConfigurations &config);
     void getJointAngles(JacoAngles &angles);
+    void setTrajectorySpeedParams(float s1, float s2);
     void getJointVelocities(JacoAngles &vels);
     void getJointTorques(AngularPosition &tqs);
     void getJointTorques(JacoAngles &tqs);
@@ -105,6 +110,9 @@ class JacoComm
     bool is_software_stop_;
     int num_fingers_;
     int robot_type_; 
+    
+    //only used for angular position control
+    float speedParameter1,speedParameter2;
 };
 
 }  // namespace jaco

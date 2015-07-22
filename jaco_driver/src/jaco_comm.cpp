@@ -162,6 +162,10 @@ JacoComm::JacoComm(const ros::NodeHandle& node_handle,
     memset(&jaco_velocity, 0, sizeof(jaco_velocity));
     setCartesianVelocities(jaco_velocity.Position.CartesianPosition);
 
+	// Set the default velocities used when moving the arm using setJointAngles function
+	speedParameter1 = DEFAULT_ANGULAR_SPEED_PARAM;
+	speedParameter2 = DEFAULT_ANGULAR_SPEED_PARAM;
+
     if (is_movement_on_start)
     {
         initFingers();
@@ -260,6 +264,32 @@ void JacoComm::initFingers(void)
 }
 
 
+void JacoComm::setTrajectorySpeedParams(float s1, float s2){
+	if (s1 < MIN_ANGULAR_SPEED_PARAM){
+		speedParameter1 = MIN_ANGULAR_SPEED_PARAM;
+		ROS_WARN("[jaco_comm.cpp] warning: attempting to set speedParameter1 to %f when minimum is %f",s1,MIN_ANGULAR_SPEED_PARAM);
+	}
+	else if (s1 > MAX_ANGULAR_SPEED_PARAM){
+		speedParameter1 = MAX_ANGULAR_SPEED_PARAM;
+		ROS_WARN("[jaco_comm.cpp] warning: attempting to set speedParameter1 to %f when maximum is %f",s1,MAX_ANGULAR_SPEED_PARAM);
+	}
+	else
+		speedParameter1 = s1;
+		
+	if (s2 < MIN_ANGULAR_SPEED_PARAM){
+		speedParameter2 = MIN_ANGULAR_SPEED_PARAM;
+		ROS_WARN("[jaco_comm.cpp] warning: attempting to set speedParameter2 to %f when minimum is %f",s2,MIN_ANGULAR_SPEED_PARAM);
+	}
+	else if (s2 > MAX_ANGULAR_SPEED_PARAM){
+		speedParameter2 = MAX_ANGULAR_SPEED_PARAM;
+		ROS_WARN("[jaco_comm.cpp] warning: attempting to set speedParameter2 to %f when maximum is %f",s2,MAX_ANGULAR_SPEED_PARAM);
+	}
+	else
+		speedParameter2 = s2;
+	
+	
+}
+
 /*!
  * \brief Sends a joint angle command to the Jaco arm.
  *
@@ -306,10 +336,10 @@ void JacoComm::setJointAngles(const JacoAngles &angles, int timeout, bool push)
     jaco_position.LimitationsActive = 1;
 
 	//Set velocity limitation to 20 degrees per second for joint 1, 2 and 3.
-	jaco_position.Limitations.speedParameter1 = 20.0f;
+	jaco_position.Limitations.speedParameter1 = speedParameter1;// 20.0f;
 
 	//Set velocity limitation to 20 degrees per second for joint 4, 5 and 6
-	jaco_position.Limitations.speedParameter2 = 20.0f;
+	jaco_position.Limitations.speedParameter2 = speedParameter2;// 20.0f;
 
     result = jaco_api_.sendAdvanceTrajectory(jaco_position);
     if (result != NO_ERROR_KINOVA)

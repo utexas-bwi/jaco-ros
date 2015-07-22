@@ -99,6 +99,12 @@ void JacoAnglesActionServer::actionCallback(const jaco_msgs::ArmJointAnglesGoalC
         last_nonstall_angles_ = current_joint_angles;
 
         JacoAngles target(goal->angles);
+        
+        //check if we want to change the default speeds
+        if (goal->speedLimitationActive == true){
+			arm_comm_.setTrajectorySpeedParams(goal->speedParam1,goal->speedParam2);
+		}
+        
         arm_comm_.setJointAngles(target);
 
         // Loop until the action completed, is preempted, or fails in some way.
