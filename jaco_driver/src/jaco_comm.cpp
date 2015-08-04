@@ -459,6 +459,73 @@ void JacoComm::setFingerPositions(const FingerAngles &fingers, int timeout, bool
     }
 
     //startAPI();
+
+    result = jaco_api_.setAngularControl();
+    if (result != NO_ERROR_KINOVA)
+    {
+        throw JacoCommException("Could not set Cartesian control", result);
+    }
+
+    // Initialize Cartesian control of the fingers
+    jaco_position.Position.HandMode = POSITION_MODE;
+    jaco_position.Position.Type = ANGULAR_POSITION;
+    jaco_position.Position.Fingers = fingers;
+    jaco_position.Position.Delay = 0.0;
+    jaco_position.LimitationsActive = 0;
+
+    AngularPosition jaco_angles;
+    memset(&jaco_angles, 0, sizeof(jaco_angles));  // zero structure
+
+    result = jaco_api_.getAngularPosition(jaco_angles);
+    if (result != NO_ERROR_KINOVA)
+    {
+        throw JacoCommException("Could not get the angular position", result);
+    }
+
+
+    jaco_position.Position.Actuators = jaco_angles.Actuators;
+
+    // When loading a cartesian position for the fingers, values are required for the arm joints
+    // as well or the arm goes nuts.  Grab the current position and feed it back to the arm.
+    JacoPose pose;
+    getCartesianPosition(pose);
+    jaco_position.Position.CartesianPosition = pose;
+
+    result = jaco_api_.sendAdvanceTrajectory(jaco_position);
+    if (result != NO_ERROR_KINOVA)
+    {
+        throw JacoCommException("Could not send advanced finger trajectory", result);
+    }
+}
+
+/*!
+ * \brief Sets the finger positions
+ */
+/*void JacoComm::setFingerPositions(const FingerAngles &fingers, int timeout, bool push)
+{
+    boost::recursive_mutex::scoped_lock lock(api_mutex_);
+
+    if (isStopped())
+    {
+        ROS_INFO("The fingers could not be set because the arm is stopped");
+        return;
+    }
+
+    int result = NO_ERROR_KINOVA;
+    TrajectoryPoint jaco_position;
+    jaco_position.InitStruct();
+    memset(&jaco_position, 0, sizeof(jaco_position));  // zero structure
+
+    if (push)
+    {
+        result = jaco_api_.eraseAllTrajectories();
+        if (result != NO_ERROR_KINOVA)
+        {
+            throw JacoCommException("Could not erase trajectories", result);
+        }
+    }
+
+    //startAPI();
     
     int current_c_type;
     result = jaco_api_.getControlType(current_c_type);
@@ -497,7 +564,7 @@ void JacoComm::setFingerPositions(const FingerAngles &fingers, int timeout, bool
     {
         throw JacoCommException("Could not send advanced finger trajectory", result);
     }
-}
+}*/
 
 
 /*!
