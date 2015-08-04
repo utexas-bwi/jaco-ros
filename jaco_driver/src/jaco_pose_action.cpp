@@ -107,6 +107,9 @@ void JacoPoseActionServer::actionCallback(const jaco_msgs::ArmPoseGoalConstPtr &
         listener.transformPose(local_pose.header.frame_id, goal->pose, local_pose);
         arm_comm_.getCartesianPosition(current_pose);
 
+		ROS_INFO("[jaco_pose_action.cpp] local pose:");
+		ROS_INFO_STREAM(local_pose);
+
         if (arm_comm_.isStopped())
         {
             ROS_INFO("Could not complete cartesian action because the arm is 'stopped'.");
@@ -121,6 +124,8 @@ void JacoPoseActionServer::actionCallback(const jaco_msgs::ArmPoseGoalConstPtr &
 
         JacoPose target(local_pose.pose);
         arm_comm_.setCartesianPosition(target);
+
+		//ROS_INFO_STREAM(current_pose);
 
         while (true)
         {
@@ -149,6 +154,7 @@ void JacoPoseActionServer::actionCallback(const jaco_msgs::ArmPoseGoalConstPtr &
 
             if (target.isCloseToOther(current_pose, tolerance_))
             {
+                ROS_INFO("[jaco_pose_action.cpp] Goal rached,");
                 result.pose = feedback.pose;
                 action_server_.setSucceeded(result);
                 return;
@@ -161,6 +167,8 @@ void JacoPoseActionServer::actionCallback(const jaco_msgs::ArmPoseGoalConstPtr &
             }
             else if ((current_time - last_nonstall_time_).toSec() > stall_interval_seconds_)
             {
+				ROS_INFO("[jaco_pose_action.cpp] Arm stalled!");
+
                 // Check if the full stall condition has been meet
                 result.pose = feedback.pose;
                 arm_comm_.stopAPI();

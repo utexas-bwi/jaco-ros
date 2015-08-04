@@ -406,13 +406,30 @@ void JacoComm::setCartesianPosition(const JacoPose &position, int timeout, bool 
     jaco_position.Limitations.speedParameter2 = 5.5;
 	jaco_position.Limitations.speedParameter3 = 5.5;*/
 	 
-	result = jaco_api_.sendBasicTrajectory(jaco_position);
+	result = jaco_api_.sendAdvanceTrajectory(jaco_position);
     if (result != NO_ERROR_KINOVA)
     {
         throw JacoCommException("Could not send basic trajectory", result);
     }
 }
 
+
+void JacoComm::setCartesianControlMode(){
+	
+	boost::recursive_mutex::scoped_lock lock(api_mutex_);
+	
+	
+	int result = jaco_api_.setCartesianControl();
+	if (result != NO_ERROR_KINOVA)
+	{
+		throw JacoCommException("Could not set Cartesian control", result);
+	} 
+	else {
+		ROS_INFO("[jaco_comm.cpp] arm set to cartesian control mode.");
+	}
+		
+	
+}
 
 /*!
  * \brief Sets the finger positions
@@ -442,12 +459,20 @@ void JacoComm::setFingerPositions(const FingerAngles &fingers, int timeout, bool
     }
 
     //startAPI();
+    
+    int current_c_type;
+    result = jaco_api_.getControlType(current_c_type);
+    ROS_INFO("[jaco_comm.cpp] Control type: %i, %i",(int)result,(int)current_c_type);
 
     result = jaco_api_.setCartesianControl();
     if (result != NO_ERROR_KINOVA)
     {
         throw JacoCommException("Could not set Cartesian control", result);
     }
+
+	result = jaco_api_.getControlType(current_c_type);
+    ROS_INFO("[jaco_comm.cpp] After setting to cartesian: %i, %i",(int)result,(int)current_c_type);
+
 
     // Initialize Cartesian control of the fingers
     jaco_position.Position.HandMode = POSITION_MODE;

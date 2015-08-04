@@ -87,6 +87,8 @@ void JacoFingersActionServer::actionCallback(const jaco_msgs::SetFingersPosition
     FingerAngles current_finger_positions;
     ros::Time current_time = ros::Time::now();
 
+	ROS_INFO("Received target request: %f, %f, %f",goal->fingers.finger1, goal->fingers.finger2, goal->fingers.finger3);
+
     try
     {
         arm_comm_.getFingerPositions(current_finger_positions);
@@ -118,12 +120,14 @@ void JacoFingersActionServer::actionCallback(const jaco_msgs::SetFingersPosition
                 arm_comm_.stopAPI();
                 arm_comm_.startAPI();
                 action_server_.setPreempted(result);
+                ROS_WARN("[jaco_fingers_action.cpp] action server is preempted or ros not ok!");
                 return;
             }
             else if (arm_comm_.isStopped())
             {
                 result.fingers = current_finger_positions.constructFingersMsg();
                 action_server_.setAborted(result);
+                ROS_WARN("[jaco_fingers_action.cpp] arm is stopped, aborting");
                 return;
             }
 
@@ -137,6 +141,10 @@ void JacoFingersActionServer::actionCallback(const jaco_msgs::SetFingersPosition
                 // Check if the action has succeeeded
                 result.fingers = current_finger_positions.constructFingersMsg();
                 action_server_.setSucceeded(result);
+                
+                ROS_INFO("Finger action finished. Result:");
+                ROS_INFO_STREAM(result);
+                
                 return;
             }
             else if (!last_nonstall_finger_positions_.isCloseToOther(current_finger_positions, stall_threshold_))
@@ -151,7 +159,10 @@ void JacoFingersActionServer::actionCallback(const jaco_msgs::SetFingersPosition
                 result.fingers = current_finger_positions.constructFingersMsg();
                 arm_comm_.stopAPI();
                 arm_comm_.startAPI();
+                //arm_comm_.getFingerPositions(current_finger_positions);
+                //arm_comm_.setFingerPositions(current_finger_positions);
                 action_server_.setPreempted(result);
+                ROS_INFO("finger action has stalled, preempting.");
                 return;
             }
 
