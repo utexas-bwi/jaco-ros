@@ -14,7 +14,7 @@
     <param name="fingers/tolerance" value="15.0" />
 
     <param name="arm_pose/stall_interval_seconds" value="1.0" />
-    <param name="arm_pose/stall_threshold" value="0.005" />
+    <param name="arm_pose/stall_threshold" value="0.015" />
     <param name="arm_pose/rate_hz" value="10.0" />
     <param name="arm_pose/tolerance" value="0.005" />
     <param name="arm_pose/tf_prefix" value="mico_" />
@@ -65,7 +65,7 @@
   </group>
   
   <group if="$(arg use_rviz)">
-	<param name="robot_description" command="$(find xacro)/xacro.py '$(find segbot_description)/robots/segbot_v2.arm.urdf.xacro'  use_full_gazebo_model:=true" />
+	<param name="robot_description" command="$(find xacro)/xacro.py '$(find segbot_arm_launch)/robots/segbot_v2.arm.urdf.xacro'  use_full_gazebo_model:=true" />
 	<node name="rviz" pkg="rviz" type="rviz"
               args="-d $(find jaco_model)/rviz/rviz_mico.rviz" />
   </group>

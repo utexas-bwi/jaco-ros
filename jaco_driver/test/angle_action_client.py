@@ -11,17 +11,24 @@ import sys
 
 
 def pose_client():
-    client = actionlib.SimpleActionClient('/jaco/arm_joint_angles', jaco_msgs.msg.ArmJointAnglesAction)
+    client = actionlib.SimpleActionClient('/mico_arm_driver/joint_angles/arm_joint_angles', jaco_msgs.msg.ArmJointAnglesAction)
 
     goal = jaco_msgs.msg.ArmJointAnglesGoal()
 
     if len(sys.argv) < 7:
-        goal.angles.joint1 = 1.5285271406173706 
-        goal.angles.joint2 = -1.3800612688064575
-        goal.angles.joint3 = -0.1439174860715866
-        goal.angles.joint4 = 0.15510250627994537
-        goal.angles.joint5 = 0.6960597634315491
-        goal.angles.joint6 = 3.3098342418670654
+        #goal.angles.joint1 = 1.5285271406173706 
+        #goal.angles.joint2 = -1.3800612688064575
+        #goal.angles.joint3 = -0.1439174860715866
+        #goal.angles.joint4 = 0.15510250627994537
+        #goal.angles.joint5 = 0.6960597634315491
+        #goal.angles.joint6 = 3.3098342418670654
+        
+        goal.angles.joint1 = -1.65
+        goal.angles.joint2 = -1.65
+        goal.angles.joint3 = 0.193
+        goal.angles.joint4 = -1.09
+        goal.angles.joint5 = 1.67
+        goal.angles.joint6 = -1.16-2*3.14
 
         rospy.logwarn("Using test goal: \n%s", goal)
     else:
