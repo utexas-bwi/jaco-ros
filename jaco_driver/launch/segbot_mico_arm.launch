@@ -26,7 +26,7 @@
     
     <param name="start_in_force_control_mode" value="True" />
     <!-- support effort types: "gravfree" (default), "full" -->
-    <param name="joint_efforts_type" value="full" />
+    <param name="joint_efforts_type" value="gravfree" />
 
     <!-- how often the driver publishes the robot's joint states, efforts, etc. -->
     <param name="status_interval_seconds" value="0.025" />
