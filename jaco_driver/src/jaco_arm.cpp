@@ -539,7 +539,7 @@ void JacoArm::statusTimer(const ros::TimerEvent&)
 {
     publishJointAngles();
     publishToolPosition();
-    //publishToolWrench();
+    publishToolWrench();
     publishFingerPosition();
     publishJointEfforts();
     
