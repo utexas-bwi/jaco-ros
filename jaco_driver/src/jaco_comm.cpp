@@ -716,6 +716,22 @@ void JacoComm::getJointTorques(AngularPosition &tqs)
 }
 
 /*!
+ * \brief API call to obtain the current measurement for all of the joints.
+ */
+void JacoComm::getJointCurrents(AngularPosition &curs)
+{
+    boost::recursive_mutex::scoped_lock lock(api_mutex_);
+    memset(&curs, 0, sizeof(curs));  // zero structure
+
+    int result = jaco_api_.getAngularCurrent(curs);
+    if (result != NO_ERROR_KINOVA)
+    {
+        throw JacoCommException("Could not get the joint currents", result);
+    }
+}
+
+
+/*!
  * \brief API call to obtain the current torque of all the joints.
  */
 void JacoComm::getJointTorques(JacoAngles &tqs)

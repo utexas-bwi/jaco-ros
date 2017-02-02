@@ -70,6 +70,8 @@ JacoArm::JacoArm(JacoComm &arm, const ros::NodeHandle &nodeHandle)
     finger_position_publisher_ = node_handle_.advertise<jaco_msgs::FingerPosition>("out/finger_position", 2);
     
 	joint_effort_publisher_ = node_handle_.advertise<sensor_msgs::JointState>("out/joint_efforts", 2);
+	joint_currents_publisher_ = node_handle_.advertise<sensor_msgs::JointState>("out/joint_currents", 2);
+	
 
 
     /* Set up Subscribers*/
@@ -96,6 +98,10 @@ JacoArm::JacoArm(JacoComm &arm, const ros::NodeHandle &nodeHandle)
     // This indicates that the ROS node should convert them first before
     // updating the joint_state topic.
     node_handle_.param("convert_joint_velocities", convert_joint_velocities_, true);
+    
+    // Publishing extra information slows down our frame rate. Only publish currents
+    // if you need the information.
+    node_handle_.param("publish_joint_currents", publish_joint_currents_, false);
 
     joint_names_.resize(JACO_JOINTS_COUNT);
     joint_names_[0] = tf_prefix_ + "joint_1";
@@ -425,7 +431,7 @@ void JacoArm::publishJointAngles(void)
                        joint_state.effort[4],
                        joint_state.effort[5]);
                  
-    /* here, we get ride of the 0 values for finger 3 since the robot doesn't actually have finger 3 and 
+    /* here, we get rid of the 0 values for finger 3 since the robot doesn't actually have finger 3 and 
      * other ROS packages complain when the joint_states message contains joints that are not in the URDF model */                   
 	joint_state.name.pop_back();
 	joint_state.position.pop_back();
@@ -535,6 +541,25 @@ void JacoArm::publishJointEfforts(void)
     joint_effort_publisher_.publish(joint_state);
 }
 
+/*!
+ * \brief Publishes the current joint efforts (gravity-free).
+ */
+void JacoArm::publishJointCurrents(void)
+{	
+	jaco_msgs::JointCurrents joint_currents;
+
+	AngularPosition api_response;
+	jaco_comm_.getJointTorques(api_response);
+	joint_currents.joint1 = api_response.Actuators.Actuator1;
+	joint_currents.joint2 = api_response.Actuators.Actuator2;
+	joint_currents.joint3 = api_response.Actuators.Actuator3;
+	joint_currents.joint4 = api_response.Actuators.Actuator4;
+	joint_currents.joint5 = api_response.Actuators.Actuator5;
+	joint_currents.joint6 = api_response.Actuators.Actuator6;
+    
+    joint_currents_publisher_.publish(joint_currents);
+}
+
 void JacoArm::statusTimer(const ros::TimerEvent&)
 {
     publishJointAngles();
@@ -542,6 +567,9 @@ void JacoArm::statusTimer(const ros::TimerEvent&)
     publishToolWrench();
     publishFingerPosition();
     publishJointEfforts();
+    if (publish_joint_currents_) {
+		publishJointCurrents();
+	}
     
     /*Gripper g;
 	jaco_comm_.getGripperStatus(g);
