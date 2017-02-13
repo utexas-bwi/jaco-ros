@@ -70,7 +70,7 @@ JacoArm::JacoArm(JacoComm &arm, const ros::NodeHandle &nodeHandle)
     finger_position_publisher_ = node_handle_.advertise<jaco_msgs::FingerPosition>("out/finger_position", 2);
     
 	joint_effort_publisher_ = node_handle_.advertise<sensor_msgs::JointState>("out/joint_efforts", 2);
-	joint_currents_publisher_ = node_handle_.advertise<sensor_msgs::JointState>("out/joint_currents", 2);
+	joint_currents_publisher_ = node_handle_.advertise<jaco_msgs::JointCurrents>("out/joint_currents", 2);
 	
 
 
@@ -549,13 +549,13 @@ void JacoArm::publishJointCurrents(void)
 	jaco_msgs::JointCurrents joint_currents;
 
 	AngularPosition api_response;
-	jaco_comm_.getJointTorques(api_response);
-	joint_currents.joint1 = api_response.Actuators.Actuator1;
-	joint_currents.joint2 = api_response.Actuators.Actuator2;
-	joint_currents.joint3 = api_response.Actuators.Actuator3;
-	joint_currents.joint4 = api_response.Actuators.Actuator4;
-	joint_currents.joint5 = api_response.Actuators.Actuator5;
-	joint_currents.joint6 = api_response.Actuators.Actuator6;
+	jaco_comm_.getJointCurrents(api_response);
+	joint_currents.currents[0] = api_response.Actuators.Actuator1;
+	joint_currents.currents[1] = api_response.Actuators.Actuator2;
+	joint_currents.currents[2] = api_response.Actuators.Actuator3;
+	joint_currents.currents[3] = api_response.Actuators.Actuator4;
+	joint_currents.currents[4] = api_response.Actuators.Actuator5;
+	joint_currents.currents[5] = api_response.Actuators.Actuator6;
     
     joint_currents_publisher_.publish(joint_currents);
 }
