@@ -510,6 +510,7 @@ void JacoArm::publishJointEfforts(void)
     if(!joint_efforts_type_.compare("full")){
 	    AngularPosition current_efforts;
 		jaco_comm_.getJointTorques(current_efforts);
+		joint_state.header.stamp = ros::Time::now();
 		joint_state.effort.resize(6);
 		joint_state.effort[0] = current_efforts.Actuators.Actuator1;
 		joint_state.effort[1] = current_efforts.Actuators.Actuator2;
@@ -520,6 +521,7 @@ void JacoArm::publishJointEfforts(void)
 	}else if(!joint_efforts_type_.compare("gravfree")) {
 	    AngularPosition current_efforts;
 		jaco_comm_.getJointTorquesGravFree(current_efforts);
+		joint_state.header.stamp = ros::Time::now();
 		joint_state.effort.resize(6);
 		joint_state.effort[0] = current_efforts.Actuators.Actuator1;
 		joint_state.effort[1] = current_efforts.Actuators.Actuator2;
