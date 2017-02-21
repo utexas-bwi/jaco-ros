@@ -55,5 +55,6 @@ install(PROGRAMS
   nodes/jaco_demo/cartesian_workout.py
   nodes/jaco_demo/grip_workout.py
   nodes/jaco_demo/joint_angle_workout.py
+  nodes/jaco_demo/power_meter.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
