@@ -37,11 +37,11 @@ def make_effort_markers(efforts, marker_array):
 		marker = Marker()
 		marker.header.frame_id = frame
 		marker.header.stamp = rospy.get_rostime()
-		marker.ns = "mico_arm_sensor_visualization"
+		marker.ns = "mico_arm_effort_visualization"
 		marker.id = i
 		marker.type = Marker.CUBE
 		marker.action = Marker.ADD
-		marker.pose.position.x = 0.07
+		marker.pose.position.x = 0.00 # 0.07
 		marker.pose.position.y = 0
 		marker.pose.position.z = 0
 		marker.pose.orientation.x = 0.0
@@ -71,7 +71,7 @@ def make_current_markers(currents, marker_array):
 		marker = Marker()
 		marker.header.frame_id = frame
 		marker.header.stamp = rospy.get_rostime()
-		marker.ns = "mico_arm_sensor_visualization"
+		marker.ns = "mico_arm_current_visualization"
 		marker.id = i + 6
 		marker.type = Marker.SPHERE
 		marker.action = Marker.ADD
