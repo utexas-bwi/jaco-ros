@@ -2,6 +2,7 @@
 
   <arg name="use_urdf" default="true"/>
   <arg name="use_rviz" default="true"/>
+  <arg name="publish_currents" default="false" />
 
   <node name="mico_arm_driver" pkg="jaco_driver" type="jaco_arm_driver" output="screen" cwd="node">
     <!-- Set this parameter to use a specific arm on your system    --> 
@@ -30,6 +31,8 @@
 
     <!-- how often the driver publishes the robot's joint states, efforts, etc. -->
     <param name="status_interval_seconds" value="0.025" />
+    <!-- Whether or not to publish joint current information -->
+    <param name="publish_joint_currents" value="$(arg publish_currents)" />
 
 
   </node>

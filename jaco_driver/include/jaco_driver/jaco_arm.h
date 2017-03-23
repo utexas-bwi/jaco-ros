@@ -27,6 +27,7 @@
 #include <jaco_msgs/JointAngles.h>
 #include <jaco_msgs/SetForceControlParams.h>
 #include <jaco_msgs/GetFingerTemperature.h>
+#include <jaco_msgs/JointCurrents.h>
 
 #include <time.h>
 #include <math.h>
@@ -77,6 +78,7 @@ class JacoArm
     void publishToolWrench(void);
     void publishFingerPosition(void);
     void publishJointEfforts(void);
+    void publishJointCurrents(void);
 
 
     tf::TransformListener tf_listener_;
@@ -93,6 +95,7 @@ class JacoArm
     ros::Publisher finger_position_publisher_;
     ros::Publisher joint_state_publisher_;
     ros::Publisher joint_effort_publisher_;
+    ros::Publisher joint_currents_publisher_;
 
 
     ros::ServiceServer stop_service_;
@@ -119,6 +122,7 @@ class JacoArm
     std::string tf_prefix_;
     double finger_conv_ratio_;
     bool convert_joint_velocities_;
+    bool publish_joint_currents_;
     std::string joint_efforts_type_;
 
     // State tracking or utility members

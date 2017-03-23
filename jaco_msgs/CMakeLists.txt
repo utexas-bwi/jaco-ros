@@ -18,6 +18,7 @@ add_message_files(
   FingerPosition.msg
   JointAngles.msg
   JointVelocity.msg
+  JointCurrents.msg
 )
 
 add_service_files(
