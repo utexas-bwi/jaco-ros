@@ -1,4 +1,0 @@
-<launch>
-	<param name="robot_description" command="$(find xacro)/xacro.py '$(find segbot_arm_launch)/robots/segbot_v2.arm.urdf.xacro'  use_full_gazebo_model:=true" />
-</launch>
-
