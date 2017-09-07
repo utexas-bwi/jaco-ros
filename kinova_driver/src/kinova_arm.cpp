@@ -231,6 +231,13 @@ KinovaArm::KinovaArm(KinovaComm &arm, const ros::NodeHandle &nodeHandle, const s
     status_timer_ = node_handle_.createTimer(ros::Duration(status_interval_seconds_),
                                            &KinovaArm::statusTimer, this);
 
+    /* check if we should start the arm in force control mode */
+    bool start_in_force_control_mode = true;
+    node_handle_.param<bool>("", start_in_force_control_mode, true);
+    if (start_in_force_control_mode){
+        kinova_comm_.startForceControl();
+    }
+
     ROS_INFO("The arm is ready to use.");
 }
 
