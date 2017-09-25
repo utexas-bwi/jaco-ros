@@ -90,7 +90,9 @@ KinovaArm::KinovaArm(KinovaComm &arm, const ros::NodeHandle &nodeHandle, const s
     }
 
 //    tf_prefix_ = kinova_robotType_ + "_" + boost::lexical_cast<string>(same_type_index); // in case of multiple same_type robots
-    tf_prefix_ = kinova_robotType_ + "_";
+    // TODO: This is hard coded, but it should be based on a ROS Param
+    // Joint names need to match the name of the links produced by Xacro when the robot's URDF is created
+    tf_prefix_ = "mico_";
 
     // Maximum number of joints on Kinova-like robots:
     robot_category_ = kinova_robotType_[0];
