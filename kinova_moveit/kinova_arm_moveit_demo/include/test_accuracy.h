@@ -27,6 +27,7 @@
 #include <moveit_msgs/DisplayRobotState.h>
 #include <moveit_msgs/ApplyPlanningScene.h>
 #include <moveit_msgs/DisplayTrajectory.h>
+#include <moveit_msgs/MoveItErrorCodes.h>
 #include <fstream>
 #include <pwd.h>
 #include <eigen_conversions/eigen_msg.h>
