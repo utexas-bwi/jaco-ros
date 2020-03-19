@@ -66,10 +66,10 @@
      <transmission name="${joint_name}_trans">
         <type>transmission_interface/SimpleTransmission</type>
         <joint name="${joint_name}">
-          <hardwareInterface>EffortJointInterface</hardwareInterface>
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
         </joint>
         <actuator name="${joint_name}_actuator">
-          <hardwareInterface>EffortJointInterface</hardwareInterface>
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
         <mechanicalReduction>160</mechanicalReduction>
         </actuator>
      </transmission>
@@ -81,12 +81,12 @@
         <link name="${link_name}">
             <visual>
                 <geometry>
-                    <box size = "0 0 0"/>
+                    <box size = "0.001 0.001 0.001"/>
                 </geometry>
             </visual>
             <collision>
                 <geometry>
-                    <box size = "0 0 0"/>
+                    <box size = "0.001 0.001 0.001"/>
                 </geometry>
             </collision>
         </link>
@@ -117,10 +117,10 @@
 		    <transmission name="${prefix}joint_finger_${finger_number}_trans">
 					<type>transmission_interface/SimpleTransmission</type>
 					<joint name="${prefix}joint_finger_${finger_number}">
-					  <hardwareInterface>EffortJointInterface</hardwareInterface>
+                        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
 					</joint>
 					<actuator name="${prefix}joint_finger_${finger_number}_actuator">
-					<hardwareInterface>EffortJointInterface</hardwareInterface>
+                        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
 					<mechanicalReduction>1</mechanicalReduction>
 					</actuator>
 		    </transmission>
